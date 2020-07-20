@@ -19,6 +19,7 @@ import { FormBgComponent } from './form-bg/form-bg.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PageForgotPasswordComponent } from './page-forgot-password/page-forgot-password.component';
 import { PageResetPasswordComponent } from './page-reset-password/page-reset-password.component';
+import { PageApplicationsComponent } from './page-applications/page-applications.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { PageResetPasswordComponent } from './page-reset-password/page-reset-pas
     TopbarComponent,
     FormBgComponent,
     PageForgotPasswordComponent,
-    PageResetPasswordComponent
+    PageResetPasswordComponent,
+    PageApplicationsComponent
   ],
   imports: [
     BrowserModule,

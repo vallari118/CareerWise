@@ -1,7 +1,8 @@
 //This service is for authentication of user
 
 import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
+import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { LocalStorageService } from './local-storage.service'
 
 
 @Injectable({
@@ -9,7 +10,8 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 })
 export class AuthService {
 
-  constructor( private router : Router) { }
+  constructor( private router : Router,
+    private storage : LocalStorageService) { }
 
   canActivate(route : ActivatedRouteSnapshot, state: RouterStateSnapshot) : boolean {
     const loggedIn = this.isLoggedIn();
@@ -34,7 +36,17 @@ export class AuthService {
 
   }
 
+
+  //if there is a token then it will login
   isLoggedIn(){
+    if(this.storage.getToken()){
+      return true;
+    }
     return false;
+  }
+
+  public logout(){
+    this.storage.removeToken();
+    this.router.navigate(['/login']);
   }
 }

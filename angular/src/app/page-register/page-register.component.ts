@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
+import { LocalStorageService } from '../local-storage.service';
+import { Router } from '@angular/router';
+import { Title } from '@angular/platform-browser'
 
 @Component({
   selector: 'app-page-register',
@@ -8,9 +11,12 @@ import { ApiService } from '../api.service';
 })
 export class PageRegisterComponent implements OnInit {
 
-  constructor(private api : ApiService) { }
+  constructor(private api : ApiService, private storage : LocalStorageService,
+    private router : Router,
+    private title : Title) { }
 
   ngOnInit(): void {
+    this.title.setTitle("Career Wise - Register");
   }
 
   public formError = ""; //Itb will set the error message
@@ -54,22 +60,27 @@ export class PageRegisterComponent implements OnInit {
 
   //This method calls the API
   private register(){
-    console.log(this.credentials);
+    //console.log(this.credentials);
 
     let requestObject = {
-      type : "POST",
+      method : "POST",
       location : "users/register",
       body : this.credentials
     };
 
     this.api.makeRequests(requestObject).then((val) =>{
+      if(val.token){
+        this.storage.setToken(val.token);
+        this.router.navigate(['/']);
+        return;
+      }
       //IF there is error msg from controller it will be assigned to formError so that alert box can be generated
       if(val.message){this.formError = val.message;}
-      console.log(val);
+      //console.log(val);
 
     });
 
-    console.log("Register!");
+    //console.log("Register!");
   }
 
 }

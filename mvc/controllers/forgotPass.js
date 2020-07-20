@@ -43,21 +43,21 @@ const UpdatePass = function(req, res, next) {
             var smtpTransport = nodemailer.createTransport({
                 service: 'Gmail',
                 auth: {
-                    user: 'navivallari@gmail.com',
-                    pass: 'krtqujpuhlalptjx'
+                    user: process.env.SENDER_EMAIL,
+                    pass: process.env.SENDER_PASS
                 }
             });
             var mailOptions = {
                 to: user.email, //email entered
-                from: 'navivallari@gmail.com',
+                from: process.env.EMAIL_ID,
                 subject: 'Password Reset',
                 text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                     'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-                    'http://localhost:4200' + '/reset/' + token + '\n\n' +
+                    process.env.RESET_ADDRESS + '/reset/' + token + '\n\n' +
                     'If you did not request this, please ignore this email and your password will remain unchanged.\n'
             };
             smtpTransport.sendMail(mailOptions, function(err) {
-                console.log('mail sent');
+                //console.log('mail sent');
                 //req.flash('success', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
                 done(err, 'done');
             });
@@ -80,13 +80,7 @@ const resetToken = function(req, res) {
 
             User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
                 if (!user) {
-                    console.log("------------");
-                    console.log(req.params.token);
-                    console.log("------------");
 
-                    console.log("------------");
-                    //req.flash('error', 'Password reset token is invalid or has expired.');
-                    console.log('Password reset token is invalid or has expired.');
                     return res.status(401).json({ message: "'Password reset token is invalid or has expired.'" });
                 }
                 if (req.body.password === req.body.password_confirm) {
@@ -95,7 +89,7 @@ const resetToken = function(req, res) {
                     user.setPassword(req.body.password);
                     user.resetPasswordToken = undefined;
                     user.resetPasswordExpires = undefined;
-                    console.log('password' + user.password + 'and the user is' + user)
+
 
                     user.save((err, newUser) => {
                         if (err) {
@@ -109,11 +103,7 @@ const resetToken = function(req, res) {
                     });
                 } else {
                     //req.flash("error", "Passwords do not match.");
-                    console.log("Passwords don't match")
-                    console.log("===========")
-                    console.log(req.body)
-                    console.log("===========")
-                    console.log(req.body.confirm)
+
                     return res.redirect('back');
                 }
             });
@@ -122,13 +112,13 @@ const resetToken = function(req, res) {
             var smtpTransport = nodemailer.createTransport({
                 service: 'Gmail',
                 auth: {
-                    user: 'navivallari@gmail.com',
-                    pass: 'krtqujpuhlalptjx'
+                    user: process.env.SENDER_EMAIL,
+                    pass: process.env.SENDER_PASS
                 }
             });
             var mailOptions = {
                 to: user.email,
-                from: 'navivallari@mail.com',
+                from: process.env.SENDER_EMAIL,
                 subject: 'Your password has been changed',
                 text: 'Hello,\n\n' +
                     'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -24,6 +25,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req, res, next) {
+    res.statusJson = function(statusCode, data) {
+        let obj = {
+            ...data,
+            statusCode: statusCode
+        }
+        res.status(statusCode).json(obj);
+    }
+    next();
+});
+
 app.use(passport.initialize());
 
 app.use('/', (req, res, next) => {
@@ -33,7 +45,7 @@ app.use('/', (req, res, next) => {
     next();
 });
 
-app.use('/', indexRouter);
+//app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/', forgotRouter);
 

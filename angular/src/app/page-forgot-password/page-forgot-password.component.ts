@@ -38,14 +38,14 @@ export class PageForgotPasswordComponent implements OnInit {
 
   private forgot(){
     let requestObject = {
-      type : "POST",
+      method : "POST",
       location : "forgot",
       body : this.credentials
     }
 
     this.api.makeRequests(requestObject).then((val)=>{
       if(val.msg){this.formError = val.msg;}
-      console.log(val.token)
+      //console.log(val.token)
 
     });
   }

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
+import { LocalStorageService } from '../local-storage.service';
+import { Router } from '@angular/router';
+import { Title } from '@angular/platform-browser'
 
 
 @Component({
@@ -9,9 +12,13 @@ import { ApiService } from '../api.service';
 })
 export class PageLoginComponent implements OnInit {
 
-  constructor(private api : ApiService) { }
+  constructor(private api : ApiService, private storage : LocalStorageService,
+    private router : Router,
+    private title : Title) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.title.setTitle("Career Wise - Login");
+   }
 
   public formError = "";
 
@@ -39,14 +46,19 @@ export class PageLoginComponent implements OnInit {
 
   private login(){
     let requestObject = {
-      type : "POST",
+      method : "POST",
       location : "users/login",
       body : this.credentials
     }
 
     this.api.makeRequests(requestObject).then((val)=>{
+      if(val.token){
+        this.storage.setToken(val.token);
+        this.router.navigate(['/']);
+        return;
+      }
       if(val.message){this.formError = val.message;}
-      console.log(val)
+      //console.log(val)
 
     });
 

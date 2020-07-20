@@ -1,22 +1,89 @@
 const mongoose = require('mongoose');
 //Used to create random salts and passwords 
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 
 
+const commentSchema = new mongoose.Schema({
+
+
+    commenter_id: {
+        type: String,
+        required: true
+    },
+    comment_content: {
+        type: String,
+        required: true
+    }
+
+});
+
+const postSchema = new mongoose.Schema({
+    content: {
+        type: String,
+        required: true
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    },
+    theme: {
+        type: String,
+        default: "primary"
+    },
+    likes: {
+        type: [String],
+        default: []
+
+    },
+    comments: {
+        type: [commentSchema],
+        default: []
+
+    }
+
+});
+
+const messageSchema = new mongoose.Schema({
+    from_id: {
+        type: String,
+        required: true,
+
+    },
+    content: [{
+        messenger: String,
+        message: String
+    }]
+
+});
+
+const applicationSchema = new mongoose.Schema({
+    from_id: {
+        type: String,
+        required: true
+    },
+    applicant_id: {
+        type: [String],
+
+    },
+    applicant_name: {
+        type: [String]
+    },
+    post_id: {
+        type: String
+    }
+});
 
 
 
 
 const userSchema = new mongoose.Schema({
-    firstname: {
+    name: {
         type: String,
         required: true
     },
-    lastname: {
-        type: String,
-        required: true
-    },
+
     email: {
         type: String,
         unique: true, //primary key
@@ -28,7 +95,27 @@ const userSchema = new mongoose.Schema({
 
     resetPasswordToken: String,
 
-    resetPasswordExpires: Date
+    resetPasswordExpires: Date,
+
+    friends: [String],
+    friends_requests: [String],
+    besties: [String],
+    enemies: [String],
+    posts: [postSchema],
+    messages: [messageSchema],
+    notifications: [String],
+    profile_image: { type: String, default: "default-avatar" },
+    new_message_notifications: {
+        type: [String],
+        default: []
+    },
+    new_notifications: {
+        type: Number,
+        default: 0
+    },
+
+    applications: [applicationSchema]
+
 
 });
 
@@ -42,5 +129,18 @@ userSchema.methods.validatePassword = function(password) {
     return hash === this.password;
 }
 
+userSchema.methods.getJwt = function() {
+    //creates the payload of jwt token
+    return jwt.sign({
+        _id: this._id,
+        email: this.email,
+        name: this.name
+    }, process.env.JWT_SECRET);
+}
+
 
 mongoose.model("User", userSchema);
+mongoose.model("Post", postSchema);
+mongoose.model("Comment", commentSchema);
+mongoose.model("Message", messageSchema);
+mongoose.model("Application", applicationSchema);

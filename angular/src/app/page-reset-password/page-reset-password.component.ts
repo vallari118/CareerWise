@@ -19,7 +19,7 @@ export class PageResetPasswordComponent implements OnInit {
   ngOnInit(): void {
     this.token = this.route.snapshot.paramMap.get("token"); //the path is given as reset/:token
                                                             //that's why use get("token")
-    console.log(this.token);
+    //console.log(this.token);
 
   }
 
@@ -56,14 +56,14 @@ export class PageResetPasswordComponent implements OnInit {
 
   private reset(){
     let requestObject = {
-      type : "POST",
+      method : "POST",
       location : "reset/"+this.token,
       body : this.credentials
     }
 
     this.api.makeRequests(requestObject).then((val)=>{
       if(val.msg){this.formError = val.msg;}
-      console.log(val);
+      //console.log(val);
       
     });
 
