@@ -33,7 +33,7 @@
 
                     <div *ngFor="let comment of post.comments" class="comment p-3 my-2 rounded">
                         <div class="comment-user">
-                            <p>{{comment.commenter_profile_image}}</p>
+
                             <a routerLink="/profile/{{comment.commenter_id}}"><img src="/assets/images/{{comment.commenter_profile_image}}.jpg" class="rounded-circle profile-img-sm"></a>
                             <span class="ml-2"><a routerLink="/profile/{{comment.commenter_id}}" class="link">{{comment.commenter_name}}</a></span>
                         </div>
