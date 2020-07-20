@@ -45,15 +45,18 @@ export class PageRegisterComponent implements OnInit {
       return this.formError = "All Fields are required";
     }
 
-    // var re = new RegExp(/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/);
-    // if(!re.test(this.credentials.email)){
-    //   return this.formError= "Please enter a valid email address";
-    // }
+    var re = new RegExp(/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/);
+    if(!re.test(this.credentials.email)){
+      return this.formError= "Please enter a valid email address";
+    }
 
     if(this.credentials.password !== this.credentials.password_confirm){
       return this.formError = "Passwords don't match.";
     }
 
+    if(this.credentials.password.length <8 && this.credentials.password_confirm.length <8){
+      return this.formError = "Password must be greater than 8 characters";
+    }
     
     this.register();
   }
